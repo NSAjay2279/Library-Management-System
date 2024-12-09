@@ -6,6 +6,7 @@ app = Flask(__name__)
 # Temporary in-memory storage for books
 books: List[Dict[str, Optional[str]]] = []
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index() -> str:
     query = None
@@ -14,9 +15,11 @@ def index() -> str:
     if request.method == 'POST':
         query = request.form.get('query', '').lower()
         if query:
-            results = [book for book in books if query in book['title'].lower().split() or query in book['author'].lower().split()]
+            results = [book for book in books if query in book['title'].lower(
+            ).split() or query in book['author'].lower().split()]
 
     return render_template('index.html', books=books, query=query, results=results)
+
 
 @app.route('/add-book', methods=['GET', 'POST'])
 def add_book() -> str:
@@ -26,6 +29,7 @@ def add_book() -> str:
         books.append({'id': len(books) + 1, 'title': title, 'author': author})
         return redirect(url_for('index'))
     return render_template('add_book.html')
+
 
 @app.route('/edit-book/<int:book_id>', methods=['GET', 'POST'])
 def edit_book(book_id: int) -> str:
@@ -41,11 +45,14 @@ def edit_book(book_id: int) -> str:
 
     return render_template('edit_book.html', book=book)
 
+
 @app.route('/delete-book/<int:book_id>', methods=['POST'])
 def delete_book(book_id: int) -> str:
     global books
-    books = [book for book in books if book['id'] != book_id]  # Remove the book with the specified ID
+    # Remove the book with the specified ID
+    books = [book for book in books if book['id'] != book_id]
     return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
