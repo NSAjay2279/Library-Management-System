@@ -3,10 +3,10 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 # Sample data (can be replaced with a database)
-books = {
+books = [
     {'id': 1, 'name': 'John Doe', 'email': 'johndoe@example.com'},
     {'id': 2, 'name': 'Jane Smith', 'email': 'janesmith@example.com'}
-}
+]
 
 # Get all books
 @app.route('/books', methods=['GET'])
