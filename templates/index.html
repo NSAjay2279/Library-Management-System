@@ -1,65 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+</head>
+<body>
+    <h1>Welcome to the Library Management System</h1>
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Library Management</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
-    </head>
-
-    <body>
-        <div class="container mt-4">
-            <h1>Library Management</h1>
-
-            <!-- Add Book -->
-            <form method="POST" class="mb-4">
-                <h2>Add Book</h2>
-                <input type="hidden" name="action" value="create">
-                <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" name="title" id="title" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="author" class="form-label">Author</label>
-                    <input type="text" name="author" id="author" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Book</button>
+    <!-- List all books -->
+    <h2>Books</h2>
+    <ul>
+        {% for book in books %}
+        <li>
+            {{ book['id'] }}: {{ book['title'] }} by {{ book['author'] }}
+            <a href="/edit-book/{{ book['id'] }}">Edit</a>
+            <form action="/delete-book/{{ book['id'] }}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
             </form>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="/add-book">Add Book</a>
 
-            <hr>
+    <!-- Search Books -->
+    <h2>Search Books</h2>
+    <form action="/" method="post">
+        <input type="text" name="query" placeholder="Search by title or author" required autocomplete="off">
+        <button type="submit">Search</button>
+    </form>
 
-            <!-- Book List -->
-            <h2>Books</h2>
-            {% for book in books %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">{{ book.title }}</h5>
-                    <p class="card-text">Author: {{ book.author }}</p>
-
-                    <!-- Update Form -->
-                    <form method="POST" class="d-inline">
-                        <input type="hidden" name="action" value="update">
-                        <input type="hidden" name="book_id" value="{{ book.id }}">
-                        <div class="mb-3 d-inline">
-                            <input type="text" name="title" class="form-control d-inline w-auto"
-                                placeholder="Update Title" value="{{ book.title }}">
-                            <input type="text" name="author" class="form-control d-inline w-auto"
-                                placeholder="Update Author" value="{{ book.author }}">
-                        </div>
-                        <button type="submit" class="btn btn-warning">Update</button>
-                    </form>
-
-                    <!-- Delete Form -->
-                    <form method="POST" class="d-inline">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="book_id" value="{{ book.id }}">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </body>
-
+    <!-- Display search results -->
+    {% if query %}
+        <h3>Search Results for "{{ query }}"</h3>
+        {% if results %}
+            <ul>
+                {% for book in results %}
+                    <li>{{ book['title'] }} by {{ book['author'] }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Not Found</p>
+        {% endif %}
+    {% endif %}
+</body>
 </html>

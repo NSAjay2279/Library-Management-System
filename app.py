@@ -1,44 +1,51 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for
+from typing import List, Dict, Optional
 
 app = Flask(__name__)
 
-# Sample data (can be replaced with a database)
-books = [
-    {'id': 1, 'title': 'Book One', 'author': 'John Doe'},
-    {'id': 2, 'title': 'Book Two', 'author': 'Jane Smith'}
-]
+# Temporary in-memory storage for books
+books: List[Dict[str, Optional[str]]] = []
 
+@app.route('/', methods=['GET', 'POST'])
+def index() -> str:
+    query = None
+    results = None
 
-@app.route("/", methods=["GET", "POST"])
-def home():
-    if request.method == "POST":
-        action = request.form.get("action")
+    if request.method == 'POST':
+        query = request.form.get('query', '').lower()
+        if query:
+            results = [book for book in books if query in book['title'].lower().split() or query in book['author'].lower().split()]
 
-        if action == "create":
-            title = request.form.get("title")
-            author = request.form.get("author")
-            if title and author:
-                books.append(
-                    {'id': len(books) + 1, 'title': title, 'author': author})
+    return render_template('index.html', books=books, query=query, results=results)
 
-        elif action == "update":
-            book_id = int(request.form.get("book_id"))
-            for book in books:
-                if book["id"] == book_id:
-                    # Update only the provided fields, keeping the rest intact
-                    book["title"] = request.form.get("title") or book["title"]
-                    book["author"] = request.form.get(
-                        "author") or book["author"]
-                    break
+@app.route('/add-book', methods=['GET', 'POST'])
+def add_book() -> str:
+    if request.method == 'POST':
+        title = request.form['title']
+        author = request.form['author']
+        books.append({'id': len(books) + 1, 'title': title, 'author': author})
+        return redirect(url_for('index'))
+    return render_template('add_book.html')
 
-        elif action == "delete":
-            book_id = int(request.form.get("book_id"))
-            books[:] = [book for book in books if book["id"] != book_id]
+@app.route('/edit-book/<int:book_id>', methods=['GET', 'POST'])
+def edit_book(book_id: int) -> str:
+    book = next((b for b in books if b['id'] == book_id), None)
+    
+    if book is None:
+        return "Book not found", 404  # Return a 404 error if the book doesn't exist
+    
+    if request.method == 'POST':
+        book['title'] = request.form['title']
+        book['author'] = request.form['author']
+        return redirect(url_for('index'))
 
-        return redirect(url_for("home"))
+    return render_template('edit_book.html', book=book)
 
-    return render_template("index.html", books=books)
+@app.route('/delete-book/<int:book_id>', methods=['POST'])
+def delete_book(book_id: int) -> str:
+    global books
+    books = [book for book in books if book['id'] != book_id]  # Remove the book with the specified ID
+    return redirect(url_for('index'))
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
