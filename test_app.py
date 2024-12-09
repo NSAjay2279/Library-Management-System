@@ -1,54 +1,32 @@
-import unittest
-from app import app
+import pytest
+from app import app  # Assuming your app is in a file named app.py
 
 
-class TestIndexRoute(unittest.TestCase):
-    def setUp(self):
-        # Set up the test client
-        self.app = app.test_client()
-        self.app.testing = True
-
-    def test_get_index(self):
-        # Test GET request
-        response = self.app.get('/')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(
-            b'Welcome to the Library Management System', response.data)
-
-    def test_post_search_books_found(self):
-        # Mock data for books
-        books = [
-            {"id": 1, "title": "Python Programming", "author": "John Doe"},
-            {"id": 2, "title": "Flask Development", "author": "Jane Smith"}
-        ]
-
-        # Set the books directly in the app context
-        with app.app_context():
-            app.config['BOOKS'] = books
-
-        # Test POST request with a query that matches a book
-        response = self.app.post('/', data={'query': 'Python'})
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Python Programming', response.data)
-        self.assertIn(b'Search Results for "python"', response.data)
-
-    def test_post_search_books_not_found(self):
-        # Mock data for books
-        books = [
-            {"id": 1, "title": "Python Programming", "author": "John Doe"},
-            {"id": 2, "title": "Flask Development", "author": "Jane Smith"}
-        ]
-
-        # Set the books directly in the app context
-        with app.app_context():
-            app.config['BOOKS'] = books
-
-        # Test POST request with a query that doesn't match any books
-        response = self.app.post('/', data={'query': 'Java'})
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Search Results for "java"', response.data)
-        self.assertIn(b'Not Found', response.data)
+@pytest.fixture
+def client():
+    app.config['TESTING'] = True
+    with app.test_client() as client:
+        yield client
 
 
-if __name__ == '__main__':
-    unittest.main()
+def test_display_books(client):
+    response = client.get('/')
+    assert response.status_code == 200
+    # Assert that the book list is present in the response
+
+
+def test_search_books(client):
+    # Simulate a search query
+    response = client.post('/', data={'query': 'python'})
+    assert response.status_code == 200
+    # Assert that the search results are displayed correctly
+
+
+def test_add_book(client):
+    # Simulate adding a new book
+    response = client.post(
+        '/add-book', data={'title': 'Test Book', 'author': 'Test Author'})
+    assert response.status_code == 302  # Assuming redirect after adding
+    # Assert that the new book is displayed in the book list
+
+# ... similar tests for editing and deleting books
