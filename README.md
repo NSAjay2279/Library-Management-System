@@ -49,7 +49,7 @@ source venv/bin/activate  # On Windows, use `venv\Scripts\activate`</code></pre>
 <h3>Running the Application</h3>
 <ol>
     <li>Start the Flask development server:
-        <pre><code>python app.py</code></pre>
+        <pre><code>flask run</code></pre>
     </li>
     <li>Open your browser and go to <a href="http://127.0.0.1:5000/">http://127.0.0.1:5000/</a> to interact with the Library Management System.</li>
 </ol>
