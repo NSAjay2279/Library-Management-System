@@ -32,8 +32,8 @@
 <h3>Installation</h3>
 <ol>
     <li>Clone the repository:
-        <pre><code>git clone <repository_url>
-cd <project_directory></code></pre>
+        <pre><code>git clone https://github.com/NSAjay2279/Library-Management-System.git<repository_url>
+cd Library-Management-System<project_directory></code></pre>
     </li>
     <li>Create and activate a virtual environment:
         <pre><code>python -m venv venv
