@@ -4,8 +4,7 @@ app = Flask(__name__)
 
 # Sample data (can be replaced with a database)
 books = [
-    {'id': 1, 'name': 'John Doe', 'email': 'johndoe@example.com'},
-    {'id': 2, 'name': 'Jane Smith', 'email': 'janesmith@example.com'}
+    {'id': 1, 'title': 'Book 1', 'author': 'author'},
 ]
 
 # Get all books
@@ -24,8 +23,6 @@ def get_book(book_id):
     return {'error': 'Book not found'}
 
 # Create a book
-
-
 @app.route('/books', methods=['POST'])
 def create_book():
     new_book = {'id': len(
