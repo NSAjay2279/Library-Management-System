@@ -1,5 +1,5 @@
 import pytest
-from app import app  # Assuming your app is in a file named app.py
+from app import app
 
 
 @pytest.fixture
@@ -9,24 +9,32 @@ def client():
         yield client
 
 
-def test_display_books(client):
-    response = client.get('/')
-    assert response.status_code == 200
-    # Assert that the book list is present in the response
-
-
-def test_search_books(client):
-    # Simulate a search query
-    response = client.post('/', data={'query': 'python'})
-    assert response.status_code == 200
-    # Assert that the search results are displayed correctly
-
-
-def test_add_book(client):
-    # Simulate adding a new book
+def test_edit_book(client):
+    # Add a new book first
     response = client.post(
         '/add-book', data={'title': 'Test Book', 'author': 'Test Author'})
-    assert response.status_code == 302  # Assuming redirect after adding
-    # Assert that the new book is displayed in the book list
+    book_id = response.headers['Location'].split('/')[-1]
 
-# ... similar tests for editing and deleting books
+    # Edit the book
+    response = client.post(
+        f'/edit-book/{book_id}', data={'title': 'Updated Title', 'author': 'Updated Author'})
+    assert response.status_code == 302
+
+    # Verify the update
+    response = client.get('/')
+    assert 'Updated Title' in response.data.decode()
+
+
+def test_delete_book(client):
+    # Add a new book first
+    response = client.post(
+        '/add-book', data={'title': 'Test Book', 'author': 'Test Author'})
+    book_id = response.headers['Location'].split('/')[-1]
+
+    # Delete the book
+    response = client.post(f'/delete-book/{book_id}')
+    assert response.status_code == 302
+
+    # Verify the deletion
+    response = client.get('/')
+    assert 'Test Book' not in response.data.decode()
