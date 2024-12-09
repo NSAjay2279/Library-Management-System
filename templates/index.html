@@ -1,19 +1,50 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Add Book{% endblock %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Library Management System</title>
+    </head>
 
-{% block header %}Add a New Book{% endblock %}
+    <body>
+        <h1>Welcome to the Library Management System</h1>
 
-{% block content %}
-<form action="/add-book" method="post">
-    <label for="title">Title:</label>
-    <input type="text" id="title" name="title" placeholder="Enter book title" required autocomplete="off">
-    <br><br>
+        <!-- List all books -->
+        <h2>Books</h2>
+        <ul>
+            {% for book in books %}
+            <li>
+                {{ book['id'] }}: {{ book['title'] }} by {{ book['author'] }}
+                <a href="/edit-book/{{ book['id'] }}">Edit</a>
+                <form action="/delete-book/{{ book['id'] }}" method="post" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="/add-book">Add Book</a>
 
-    <label for="author">Author:</label>
-    <input type="text" id="author" name="author" placeholder="Enter book author" required autocomplete="off">
-    <br><br>
+        <!-- Search Books -->
+        <h2>Search Books</h2>
+        <form action="/" method="post">
+            <input type="text" name="query" placeholder="Search by title or author" required autocomplete="off">
+            <button type="submit">Search</button>
+        </form>
 
-    <button type="submit">Add Book</button>
-</form>
-{% endblock %}
+        <!-- Display search results -->
+        {% if query %}
+        <h3>Search Results for "{{ query }}"</h3>
+        {% if results %}
+        <ul>
+            {% for book in results %}
+            <li>{{ book['title'] }} by {{ book['author'] }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Not Found</p>
+        {% endif %}
+        {% endif %}
+    </body>
+
+</html>
