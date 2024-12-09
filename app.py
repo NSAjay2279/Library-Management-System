@@ -30,10 +30,10 @@ def add_book() -> str:
 @app.route('/edit-book/<int:book_id>', methods=['GET', 'POST'])
 def edit_book(book_id: int) -> str:
     book = next((b for b in books if b['id'] == book_id), None)
-    
+
     if book is None:
         return "Book not found", 404  # Return a 404 error if the book doesn't exist
-    
+
     if request.method == 'POST':
         book['title'] = request.form['title']
         book['author'] = request.form['author']
