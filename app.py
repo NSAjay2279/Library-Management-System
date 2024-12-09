@@ -11,7 +11,7 @@ books = {
 # Get all books
 @app.route('/', methods=['GET'])
 def get_books():
-    return books
+    return render_template("index")
 
 
 # Run the flask App
