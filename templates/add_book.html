@@ -1,28 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Add Book</title>
-    </head>
-    <body>
-        <h1>Add a New Book</h1>
+{% extends "layout.html" %}
 
-        <form action="/add-book" method="post">
-            <label for="title">Title:</label>
-            <input type="text" id="title" name="title" placeholder="Enter book title" required autocomplete="off">  <!-- Added autocomplete="off" -->
+{% block title %}Add Book{% endblock %}
 
-            <br><br>
+{% block content %}
+<h1>Add a New Book</h1>
 
-            <label for="author">Author:</label>
-            <input type="text" id="author" name="author" placeholder="Enter book author" required autocomplete="off">  <!-- Added autocomplete="off" -->
+<form action="/add-book" method="post">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" placeholder="Enter book title" required autocomplete="off">
 
-            <br><br>
+    <br><br>
 
-            <button type="submit">Add Book</button>
-        </form>
+    <label for="author">Author:</label>
+    <input type="text" id="author" name="author" placeholder="Enter book author" required autocomplete="off">
 
-        <br>
-        <a href="/">Back to Home</a>
-    </body>
-</html>
+    <br><br>
+
+    <button type="submit">Add Book</button>
+</form>
+
+<br>
+<a href="/">Back to Home</a>
+{% endblock %}
