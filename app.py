@@ -23,18 +23,17 @@ def home():
 
         elif action == "update":
             book_id = int(request.form.get("book_id"))
-            title = request.form.get("title")
-            author = request.form.get("author")
             for book in books:
                 if book["id"] == book_id:
-                    book["title"] = title
-                    book["author"] = author
+                    # Update only the provided fields, keeping the rest intact
+                    book["title"] = request.form.get("title") or book["title"]
+                    book["author"] = request.form.get(
+                        "author") or book["author"]
                     break
 
         elif action == "delete":
             book_id = int(request.form.get("book_id"))
-            books[:] = [book for book in books if book["id"]
-                        != book_id]  # Modify the list in place
+            books[:] = [book for book in books if book["id"] != book_id]
 
         return redirect(url_for("home"))
 
