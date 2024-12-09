@@ -22,9 +22,8 @@ class TestIndexRoute(unittest.TestCase):
             {"id": 2, "title": "Flask Development", "author": "Jane Smith"}
         ]
 
-        # Use Flask's `g` or `app.config` to pass the `books` data if needed
-        with self.app.context():
-            # Set global books variable in app context
+        # Set the books directly in the app context
+        with app.app_context():
             app.config['BOOKS'] = books
 
         # Test POST request with a query that matches a book
@@ -40,7 +39,8 @@ class TestIndexRoute(unittest.TestCase):
             {"id": 2, "title": "Flask Development", "author": "Jane Smith"}
         ]
 
-        with self.app.context():
+        # Set the books directly in the app context
+        with app.app_context():
             app.config['BOOKS'] = books
 
         # Test POST request with a query that doesn't match any books
