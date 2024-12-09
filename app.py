@@ -33,8 +33,8 @@ def home():
 
         elif action == "delete":
             book_id = int(request.form.get("book_id"))
-            global books
-            books = [book for book in books if book["id"] != book_id]
+            books[:] = [book for book in books if book["id"]
+                        != book_id]  # Modify the list in place
 
         return redirect(url_for("home"))
 
