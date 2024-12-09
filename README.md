@@ -40,8 +40,6 @@ cd Library-Management-System<project_directory></code></pre>
 source venv/bin/activate  # On Windows, use `venv\Scripts\activate`</code></pre>
     </li>
     <li>Install required dependencies:
-        <pre><code>pip install -r requirements.txt</code></pre>
-        If you don’t have a <code>requirements.txt</code>, you can install Flask manually:
         <pre><code>pip install flask pytest</code></pre>
     </li>
 </ol>
